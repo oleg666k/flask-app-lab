@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header class="text-center mb-5">
+
+    <img
+        src="{{ url_for('static', filename='images/photo.jpg') }}"
+        alt=" Oleg"
+        class="profile-photo mb-3"
+    >
+
+    <h1>{{ name }}</h1>
+
+    <p class="lead">
+        Студент-програміст
+    </p>
+
+</header>
+
+<nav class="resume-nav mb-4" aria-label="Навігація резюме">
+    <a href="#about">Про себе</a>
+    <a href="#education">Освіта</a>
+    <a href="#skills">Навички</a>
+    <a href="#technologies">Технології</a>
+    <a href="#experience">Досвід і проєкти</a>
+</nav>
+
+<section id="about" class="resume-section">
+    <h2>Про себе</h2>
+
+    <p>
+        Я студент спеціальності «Інженерія програмного забезпечення».
+        Цікавлюся розробкою програмного забезпечення, вебтехнологіями
+        та створенням власних проєктів.
+    </p>
+</section>
+
+<section id="education" class="resume-section">
+    <h2>Освіта</h2>
+
+    <p>
+        Прикарпатський національний університет імені Василя Стефаника.
+    </p>
+
+    <p>
+        Спеціальність: «Інженерія програмного забезпечення».
+    </p>
+</section>
+
+<section id="skills" class="resume-section">
+    <h2>Навички</h2>
+
+    <ul>
+        <li>Основи алгоритмізації та програмування.</li>
+        <li>Розуміння принципів об'єктноорієнтованого програмування.</li>
+        <li>Створення вебсторінок.</li>
+        <li>Робота з Git та GitHub.</li>
+    </ul>
+</section>
+
+<section id="technologies" class="resume-section">
+    <h2>Технології</h2>
+
+    <div class="technology-list">
+        <span class="badge text-bg-primary">Python</span>
+        <span class="badge text-bg-primary">Java</span>
+        <span class="badge text-bg-primary">C++</span>
+        <span class="badge text-bg-primary">HTML</span>
+        <span class="badge text-bg-primary">CSS</span>
+        <span class="badge text-bg-primary">JavaScript</span>
+        <span class="badge text-bg-primary">Flask</span>
+    </div>
+</section>
+
+<section id="experience" class="resume-section">
+    <h2>Досвід роботи та проєкти</h2>
+
+    <p>
+        Комерційного досвіду роботи поки немає.
+        Працюю над навчальними проєктами та вдосконалюю
+        навички програмування.
+    </p>
+
+    <ul>
+        <li>Розробка вебсторінок за допомогою HTML і CSS.</li>
+        <li>Створення програм на Python та Java.</li>
+        <li>Навчальні проєкти з використанням Flask.</li>
+    </ul>
+</section>
+
+{% endblock %}

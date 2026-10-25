@@ -1,0 +1,78 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="contact-card">
+
+    <h1 class="mb-4">Контакти</h1>
+
+    <p>
+        <strong>Ім'я:</strong> {{ name }}
+    </p>
+
+    <p>
+        <strong>Спеціальність:</strong> Інженерія програмного забезпечення
+    </p>
+
+    <p>
+        <strong>Email:</strong> your.email@example.com
+    </p>
+
+    <hr>
+
+    <h2 class="mb-3">Надіслати повідомлення</h2>
+
+    <!-- заглушка -->
+    <form action="#" method="post"
+          onsubmit="alert('Форма поки що не надсилає повідомлення.'); return false;">
+
+        <div class="mb-3">
+            <label for="sender" class="form-label">Ваше ім'я</label>
+
+            <input
+                type="text"
+                class="form-control"
+                id="sender"
+                name="sender"
+                placeholder="Введіть ім'я"
+                required
+            >
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Ваш email</label>
+
+            <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="Введіть email"
+                required
+            >
+        </div>
+
+        <div class="mb-3">
+            <label for="message" class="form-label">Повідомлення</label>
+
+            <textarea
+                class="form-control"
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="Введіть повідомлення"
+                required
+            ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Надіслати
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
