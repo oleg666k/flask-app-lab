@@ -1,0 +1,21 @@
+
+{% extends "base.html" %}
+
+{% block title %}Головна сторінка{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>Вітаємо на сайті!</h2>
+    <p>Це головна сторінка Flask застосунку.</p>
+    <p>У лабораторній роботі 3 використано модульну структуру
+       та Blueprints.</p>
+
+    <a class="button" href="{{ url_for('users.greetings', name='John') }}">
+        Перейти до користувачів
+    </a>
+
+    <a class="button" href="{{ url_for('products.list_products') }}">
+        Переглянути товари
+    </a>
+</section>
+{% endblock %}
