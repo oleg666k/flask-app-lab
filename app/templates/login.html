@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5" style="max-width: 450px;">
+
+    <h2>Вхід у систему</h2>
+
+    <form method="POST" action="{{ url_for('users.login') }}">
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Логін</label>
+
+            <input
+                type="text"
+                name="username"
+                id="username"
+                class="form-control"
+                required
+            >
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль</label>
+
+            <input
+                type="password"
+                name="password"
+                id="password"
+                class="form-control"
+                required
+            >
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Увійти
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
