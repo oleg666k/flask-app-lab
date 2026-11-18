@@ -4,19 +4,15 @@
 {% block title %}Привітання{% endblock %}
 
 {% block content %}
-<div class="user-layout">
-    <aside class="sidebar">
-        <h3>Меню користувача</h3>
-        <a href="{{ url_for('home') }}">Головна</a>
-        <a href="{{ url_for('users.greetings', name='John') }}">Привітання</a>
-        <a href="{{ url_for('users.admin') }}">Адміністратор</a>
-        <a href="{{ url_for('products.list_products') }}">Товари</a>
-    </aside>
 
-    <section class="card">
-        <h2>Вітаємо, {{ name|upper }}!</h2>
-        <p>Ваш вік: {{ age }}</p>
-        <p>Це сторінка модуля користувачів.</p>
-    </section>
+<div class="container mt-5">
+    <h1>Привіт, {{ name | upper }}!</h1>
+
+    <p>Ваш вік: {{ age }}</p>
+
+    <a href="{{ url_for('home') }}" class="btn btn-primary">
+        На головну
+    </a>
 </div>
+
 {% endblock %}

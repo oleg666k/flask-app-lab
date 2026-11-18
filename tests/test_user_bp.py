@@ -10,7 +10,7 @@ class FlaskAppTestCase(unittest.TestCase):
         self.client = app.test_client()
 
     def test_greetings_page(self):
-        response = self.client.get("/users/hi/John?age=30")
+        response = self.client.get("/hi/John?age=30")
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"JOHN", response.data)
@@ -18,7 +18,7 @@ class FlaskAppTestCase(unittest.TestCase):
 
     def test_admin_page(self):
         response = self.client.get(
-            "/users/admin",
+            "/admin",
             follow_redirects=True
         )
 
