@@ -1,78 +1,32 @@
 
 {% extends "base.html" %}
+{% from "macros/forms.html" import render_field %}
+
+{% block title %}Контактна форма{% endblock %}
 
 {% block content %}
 
 <div class="contact-card">
+    <h1 class="mb-4">Контактна форма</h1>
 
-    <h1 class="mb-4">Контакти</h1>
-
-    <p>
-        <strong>Ім'я:</strong> {{ name }}
-    </p>
-
-    <p>
-        <strong>Спеціальність:</strong> Інженерія програмного забезпечення
-    </p>
-
-    <p>
-        <strong>Email:</strong> your.email@example.com
-    </p>
+    <p><strong>Ім'я:</strong> {{ name }}</p>
+    <p><strong>Спеціальність:</strong> Інженерія програмного забезпечення</p>
 
     <hr>
 
-    <h2 class="mb-3">Надіслати повідомлення</h2>
+    <h3>Надіслати повідомлення</h3>
 
-    <!-- заглушка -->
-    <form action="#" method="post"
-          onsubmit="alert('Форма поки що не надсилає повідомлення.'); return false;">
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
 
-        <div class="mb-3">
-            <label for="sender" class="form-label">Ваше ім'я</label>
+        {{ render_field(form.name) }}
+        {{ render_field(form.email) }}
+        {{ render_field(form.phone) }}
+        {{ render_field(form.subject) }}
+        {{ render_field(form.message, rows=5) }}
 
-            <input
-                type="text"
-                class="form-control"
-                id="sender"
-                name="sender"
-                placeholder="Введіть ім'я"
-                required
-            >
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Ваш email</label>
-
-            <input
-                type="email"
-                class="form-control"
-                id="email"
-                name="email"
-                placeholder="Введіть email"
-                required
-            >
-        </div>
-
-        <div class="mb-3">
-            <label for="message" class="form-label">Повідомлення</label>
-
-            <textarea
-                class="form-control"
-                id="message"
-                name="message"
-                rows="5"
-                placeholder="Введіть повідомлення"
-                required
-            ></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-            Надіслати
-        </button>
-
+        {{ form.submit(class="btn btn-primary w-100") }}
     </form>
-
 </div>
 
 {% endblock %}
-
