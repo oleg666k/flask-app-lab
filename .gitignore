@@ -4,5 +4,11 @@
 # кеш python
 __pycache__/
 *.py[cod]
+# Дані локального застосунку
+data/*.json
+logs/*.log
+app/products/static/uploads/*
 
+# Тимчасові файли
+.pytest_cache/
 .env

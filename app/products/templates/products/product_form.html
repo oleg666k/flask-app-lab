@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import render_field %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="contact-card">
+
+    <h2 class="mb-4">{{ title }}</h2>
+
+    <form method="POST" enctype="multipart/form-data" novalidate>
+        {{ form.hidden_tag() }}
+
+        {{ render_field(form.name) }}
+        {{ render_field(form.content) }}
+        {{ render_field(form.price, step="0.01") }}
+        {{ render_field(form.category) }}
+        {{ render_field(form.quantity, min="0") }}
+
+        {{ render_field(form.image, accept=".jpg,.jpeg,.png") }}
+
+        {% if product and product.image %}
+            <p>Поточне зображення:</p>
+
+            <img
+                src="{{ url_for('products.static', filename=product.image) }}"
+                alt="Фото товару"
+                class="img-fluid rounded mb-3"
+                style="max-height: 200px;"
+            >
+        {% endif %}
+
+        {{ form.submit(class="btn btn-success") }}
+
+        <a
+            href="{{ url_for('products.list_products') }}"
+            class="btn btn-secondary"
+        >
+            Скасувати
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

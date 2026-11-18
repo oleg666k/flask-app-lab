@@ -202,3 +202,30 @@ footer {
         align-items: center;
     }
 }
+
+/* Зображення товарів */
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* Поля форм */
+.form-control,
+.form-select {
+    border-radius: 6px;
+}
+
+/* Помилки перевірки */
+.invalid-feedback {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Кнопки товарів */
+.product-card .btn {
+    margin-top: 10px;
+}
