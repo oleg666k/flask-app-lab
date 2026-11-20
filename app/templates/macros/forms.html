@@ -1,16 +1,60 @@
 {% macro render_field(field) %}
-<div class="mb-3">
-    {{ field.label(class="form-label") }}
 
-    {% if field.errors %}
-        {{ field(class="form-control is-invalid", **kwargs) }}
-        {% for error in field.errors %}
-            <div class="invalid-feedback d-block">
-                {{ error }}
-            </div>
-        {% endfor %}
+<div class="mb-3">
+
+    {% if field.type == "BooleanField" %}
+
+        <div class="form-check">
+
+            {{ field(class="form-check-input") }}
+
+            {{ field.label(class="form-check-label") }}
+
+        </div>
+
     {% else %}
-        {{ field(class="form-control", **kwargs) }}
+
+        <!-- Назва поля -->
+        {{ field.label(class="form-label") }}
+
+        <!--  CSS клас -->
+        {% if field.type == "SelectField" %}
+            {% set field_class = "form-select" %}
+        {% else %}
+            {% set field_class = "form-control" %}
+        {% endif %}
+
+        {% if field.errors %}
+
+            {{
+                field(
+                    class=field_class ~ " is-invalid",
+                    **kwargs
+                )
+            }}
+
+        {% else %}
+
+            {{
+                field(
+                    class=field_class,
+                    **kwargs
+                )
+            }}
+
+        {% endif %}
+
     {% endif %}
+
+    <!-- Помилки перевірки -->
+    {% for error in field.errors %}
+
+        <div class="invalid-feedback d-block">
+            {{ error }}
+        </div>
+
+    {% endfor %}
+
 </div>
+
 {% endmacro %}

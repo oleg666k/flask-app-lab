@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+
+{% block css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('posts.static', filename='css/posts.css') }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="post-detail">
+
+    <h1 class="mb-4">
+        {{ post.title }}
+    </h1>
+
+    <img
+        src="{{ url_for('posts.static', filename='img/default.jpg') }}"
+        alt="Зображення поста"
+        class="post-detail-image"
+    >
+
+    <p>
+        <strong>Автор:</strong>
+        {{ post.author }}
+    </p>
+
+    <p>
+        <strong>Категорія:</strong>
+        {{ post.category }}
+    </p>
+
+    <p>
+        <strong>Дата публікації:</strong>
+        {{ post.posted.strftime('%d.%m.%Y %H:%M') }}
+    </p>
+
+    <p>
+        <strong>Статус:</strong>
+
+        {% if post.is_active %}
+            Активний
+        {% else %}
+            Неактивний
+        {% endif %}
+    </p>
+
+    <hr>
+
+    <div class="post-content">
+        {{ post.content }}
+    </div>
+
+    <hr>
+
+    <div class="d-flex gap-2 flex-wrap">
+
+        <a
+            href="/post/{{ post.id }}/update"
+            class="btn btn-warning"
+        >
+            Edit
+        </a>
+
+        <a
+            href="/post/{{ post.id }}/delete"
+            class="btn btn-danger"
+        >
+            Delete
+        </a>
+
+        <a
+            href="/post"
+            class="btn btn-secondary"
+        >
+            Назад
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

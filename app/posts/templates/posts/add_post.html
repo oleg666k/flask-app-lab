@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% from "macros/forms.html" import render_field %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+
+{% block css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('posts.static', filename='css/posts.css') }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="post-form-container">
+
+    <h2 class="mb-4">
+        {{ title }}
+    </h2>
+
+    <form method="POST" novalidate>
+
+        {{ form.hidden_tag() }}
+
+        {{ render_field(form.title) }}
+
+        <!-- Текст -->
+        {{ render_field(form.content, rows=6) }}
+
+        <!-- Активність -->
+        {{ render_field(form.enabled) }}
+
+        {{ render_field(form.publish_date) }}
+
+        <!-- Категорія -->
+        {{ render_field(form.category) }}
+
+        <!-- Кнопки -->
+        <div class="d-flex gap-2">
+
+            {{ form.submit(class="btn btn-success") }}
+
+            <a
+                href="/post"
+                class="btn btn-secondary"
+            >
+                Скасувати
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

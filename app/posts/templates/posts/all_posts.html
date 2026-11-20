@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Усі пости{% endblock %}
+
+{% block css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('posts.static', filename='css/posts.css') }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="posts-header">
+
+    <h1>Усі пости</h1>
+
+    <a href="/post/create" class="btn btn-success">
+        Add Post
+    </a>
+
+</div>
+
+
+<div class="posts-grid">
+
+    {% for post in posts %}
+
+        <div class="post-card">
+
+            <img
+                src="{{ url_for('posts.static', filename='img/default.jpg') }}"
+                alt="Зображення поста"
+                class="post-image"
+            >
+
+            <div class="post-body">
+
+                <h3>{{ post.title }}</h3>
+
+                <p>
+                    <strong>Категорія:</strong>
+                    {{ post.category }}
+                </p>
+
+                <!-- Дата -->
+                <p class="text-muted">
+                    {{ post.posted.strftime('%d.%m.%Y %H:%M') }}
+                </p>
+
+                <p>
+                    {{ post.content[:100] }}
+
+                    {% if post.content|length > 100 %}
+                        ...
+                    {% endif %}
+                </p>
+
+                <a
+                    href="/post/{{ post.id }}"
+                    class="btn btn-primary"
+                >
+                    Переглянути
+                </a>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+            Поки що немає постів.
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
