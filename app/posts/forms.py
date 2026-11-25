@@ -1,3 +1,5 @@
+from wtforms import SelectMultipleField
+from .models import Tag
 from datetime import datetime
 
 from flask_wtf import FlaskForm
@@ -9,6 +11,8 @@ from wtforms import (
     SelectField,
     SubmitField
 )
+from .. import db
+from ..users.models import User
 
 from wtforms.fields import DateTimeLocalField
 
@@ -78,7 +82,40 @@ class PostForm(FlaskForm):
             )
         ]
     )
+        # Вибір автора поста
+    author_id = SelectField(
+        "Автор",
+        coerce=int,
+        validators=[DataRequired()]
+    )
+         # Вибір декількох тегів
+    tags = SelectMultipleField(
+        "Теги",
+        coerce=int
+    )
+    def __init__(self, *args, **kwargs):
 
+        super().__init__(*args, **kwargs)
+
+        # Отримуємо користувачів
+        authors = db.session.scalars(
+            db.select(User).order_by(User.id)
+        ).all()
+
+        self.author_id.choices = [
+            (author.id, author.username)
+            for author in authors
+        ]
+
+        # Отримуємо теги
+        tags = db.session.scalars(
+            db.select(Tag).order_by(Tag.id)
+        ).all()
+
+        self.tags.choices = [
+            (tag.id, tag.name)
+            for tag in tags
+        ]
     submit = SubmitField(
         "Зберегти пост"
     )

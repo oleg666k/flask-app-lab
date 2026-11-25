@@ -41,7 +41,13 @@
 
         <!-- Категорія -->
         {{ render_field(form.category) }}
+         {{ render_field(form.author_id) }} 
+         <!-- Вибір декількох тегів -->
+        {{ render_field(form.tags, size=4) }}
 
+         <p class="text-muted">
+         Утримуйте Ctrl для вибору декількох тегів.
+         </p>
         <!-- Кнопки -->
         <div class="d-flex gap-2">
 

@@ -52,7 +52,7 @@ def create_app(config_name=None):
         )
     )
 
-    #  розширення
+    app.config["SQLALCHEMY_ECHO"] = False
     db.init_app(app)
     migrate.init_app(app, db)
 
@@ -76,4 +76,6 @@ def create_app(config_name=None):
     def page_not_found(error):
         return render_template("404.html"), 404
     from .products import models
+    from .users import models as user_models
+
     return app

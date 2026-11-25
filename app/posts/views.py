@@ -8,22 +8,25 @@ from flask import (
 )
 
 from app import db
-
+from sqlalchemy.orm import joinedload, selectinload
 from app.posts import post_bp
-from app.posts.models import Post
+from .models import Post, Tag
 from app.posts.forms import (
     PostForm,
     DeletePostForm
 )
 
 
-# перегляд усіх активних постів
+# Перегляд усіх активних постів
 @post_bp.route("/")
 @post_bp.route("")
 def list_posts():
-
     stmt = (
         db.select(Post)
+        .options(
+            joinedload(Post.user),
+            selectinload(Post.tags)
+        )
         .where(Post.is_active.is_(True))
         .order_by(
             Post.posted.desc(),
@@ -45,26 +48,25 @@ def list_posts():
     methods=["GET", "POST"]
 )
 def create_post():
-
     form = PostForm()
 
     if form.validate_on_submit():
-
-        # Визначаємо автора
-        author = session.get(
-            "user",
-            "Anonymous"
-        )
-
-        # Створюємо o'єкт
+        # Створюємо об'єкт
         post = Post(
             title=form.title.data.strip(),
             content=form.content.data.strip(),
             category=form.category.data,
             posted=form.publish_date.data,
             is_active=form.enabled.data,
-            author=str(author)[:20]
+            user_id=form.author_id.data
         )
+
+        # Отримуємо вибрані теги з БД
+        post.tags = db.session.scalars(
+            db.select(Tag).where(
+                Tag.id.in_(form.tags.data)
+            )
+        ).all()
 
         # Зберігаємо в базу
         db.session.add(post)
@@ -95,8 +97,7 @@ def create_post():
 # Перегляд одного поста
 @post_bp.route("/<int:id>")
 def detail_post(id):
-
-    # Якщо поста нема повертаємо 404
+    # Якщо поста нема, повертаємо 404
     post = db.get_or_404(Post, id)
 
     return render_template(
@@ -105,33 +106,38 @@ def detail_post(id):
     )
 
 
+# Оновлення поста
 @post_bp.route(
     "/<int:id>/update",
     methods=["GET", "POST"]
 )
 def update_post(id):
-
     post = db.get_or_404(Post, id)
-
     form = PostForm(obj=post)
 
     if request.method == "GET":
-
+        form.tags.data = [
+            tag.id for tag in post.tags
+        ]
+        form.author_id.data = post.user_id
         form.enabled.data = post.is_active
         form.publish_date.data = post.posted
 
     if form.validate_on_submit():
-
-        # оновлення поля об'єкта
+        # Оновлення полів об'єкта
         post.title = form.title.data.strip()
-
         post.content = form.content.data.strip()
-
         post.category = form.category.data
-
         post.is_active = form.enabled.data
-
         post.posted = form.publish_date.data
+        post.user_id = form.author_id.data
+
+        # Оновлюємо вибрані теги
+        post.tags = db.session.scalars(
+            db.select(Tag).where(
+                Tag.id.in_(form.tags.data)
+            )
+        ).all()
 
         db.session.commit()
 
@@ -160,18 +166,16 @@ def update_post(id):
     )
 
 
+# Видалення поста
 @post_bp.route(
     "/<int:id>/delete",
     methods=["GET", "POST"]
 )
 def delete_post(id):
-
     post = db.get_or_404(Post, id)
-
     form = DeletePostForm()
 
     if form.validate_on_submit():
-
         db.session.delete(post)
         db.session.commit()
 

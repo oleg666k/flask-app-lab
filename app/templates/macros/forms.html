@@ -18,8 +18,7 @@
         {{ field.label(class="form-label") }}
 
         <!--  CSS клас -->
-        {% if field.type == "SelectField" %}
-            {% set field_class = "form-select" %}
+         {% if field.type in ["SelectField", "SelectMultipleField"] %}            {% set field_class = "form-select" %}
         {% else %}
             {% set field_class = "form-control" %}
         {% endif %}

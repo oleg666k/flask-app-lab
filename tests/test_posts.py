@@ -1,41 +1,50 @@
 import unittest
-
 from datetime import datetime
 
 from app import create_app, db
+from app.users.models import User
 from app.posts.models import Post
 
 
 class PostTestCase(unittest.TestCase):
 
     def setUp(self):
-
         # Створити тестовий застосунок
         self.app = create_app("testing")
-
         self.client = self.app.test_client()
 
         # Створення таблиці в тестовій SQLite
         with self.app.app_context():
             db.create_all()
+            db.session.add_all([
+                User(
+                    username="user1",
+                    email="user1@example.com",
+                    password="test-password"
+                ),
+                User(
+                    username="user2",
+                    email="user2@example.com",
+                    password="test-password"
+                )
+            ])
+            db.session.commit()
 
     def tearDown(self):
-
         # Очищаємо тестову базу
         with self.app.app_context():
-
             db.session.remove()
             db.drop_all()
 
     # Дані для заповнення форми
     def post_data(self):
-
         return {
             "title": "Test Post",
             "content": "This is a test post.",
             "category": "tech",
             "publish_date": "2026-11-20T12:00",
-            "enabled": "y"
+            "enabled": "y",
+            "author_id": "1"
         }
 
     # Допоміжний метод створення поста
@@ -44,9 +53,7 @@ class PostTestCase(unittest.TestCase):
         title="Test Post",
         is_active=True
     ):
-
         with self.app.app_context():
-
             post = Post(
                 title=title,
                 content="Test content",
@@ -55,7 +62,7 @@ class PostTestCase(unittest.TestCase):
                     2026, 11, 20, 12, 0
                 ),
                 is_active=is_active,
-                author="Anonymous"
+                user_id=1
             )
 
             db.session.add(post)
@@ -65,7 +72,6 @@ class PostTestCase(unittest.TestCase):
 
     # Тест створення поста
     def test_create_post(self):
-
         response = self.client.post(
             "/post/create",
             data=self.post_data(),
@@ -78,7 +84,6 @@ class PostTestCase(unittest.TestCase):
         )
 
         with self.app.app_context():
-
             posts = db.session.scalars(
                 db.select(Post)
             ).all()
@@ -91,23 +96,21 @@ class PostTestCase(unittest.TestCase):
             )
 
             self.assertEqual(
-                posts[0].author,
-                "Anonymous"
+                posts[0].user.username,
+                "user1"
             )
 
-    # Тест автора із сесії
-    def test_author_from_session(self):
-
-        with self.client.session_transaction() as sess:
-            sess["user"] = "admin"
+    # Перевірка вибору автора
+    def test_selected_author(self):
+        data = self.post_data()
+        data["author_id"] = "2"
 
         self.client.post(
             "/post/create",
-            data=self.post_data()
+            data=data
         )
 
         with self.app.app_context():
-
             post = db.session.scalar(
                 db.select(Post)
             )
@@ -115,13 +118,12 @@ class PostTestCase(unittest.TestCase):
             self.assertIsNotNone(post)
 
             self.assertEqual(
-                post.author,
-                "admin"
+                post.user.username,
+                "user2"
             )
 
     # Тест списку активних постів
     def test_list_posts(self):
-
         self.create_test_post(
             title="Visible Post",
             is_active=True
@@ -151,7 +153,6 @@ class PostTestCase(unittest.TestCase):
 
     # Тест перегляду одного поста
     def test_view_post_detail(self):
-
         post_id = self.create_test_post()
 
         response = self.client.get(
@@ -170,11 +171,9 @@ class PostTestCase(unittest.TestCase):
 
     # Тест редагування
     def test_update_post(self):
-
         post_id = self.create_test_post()
 
         data = self.post_data()
-
         data["title"] = "Updated Post"
         data["content"] = "Updated content"
 
@@ -190,7 +189,6 @@ class PostTestCase(unittest.TestCase):
         )
 
         with self.app.app_context():
-
             post = db.session.get(
                 Post,
                 post_id
@@ -208,7 +206,6 @@ class PostTestCase(unittest.TestCase):
 
     # Тест видалення
     def test_delete_post(self):
-
         post_id = self.create_test_post()
 
         # Перевірка підтвердження
@@ -233,7 +230,6 @@ class PostTestCase(unittest.TestCase):
         )
 
         with self.app.app_context():
-
             post = db.session.get(
                 Post,
                 post_id
@@ -243,7 +239,6 @@ class PostTestCase(unittest.TestCase):
 
     # Тест помилки 404
     def test_404_not_found(self):
-
         response = self.client.get(
             "/post/999"
         )
@@ -255,9 +250,7 @@ class PostTestCase(unittest.TestCase):
 
     # Тест некоректного введення
     def test_invalid_post(self):
-
         data = self.post_data()
-
         data["title"] = ""
         data["content"] = ""
 
@@ -272,7 +265,6 @@ class PostTestCase(unittest.TestCase):
         )
 
         with self.app.app_context():
-
             posts = db.session.scalars(
                 db.select(Post)
             ).all()

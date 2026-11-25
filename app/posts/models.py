@@ -6,46 +6,60 @@ from sqlalchemy import (
     DateTime,
     Enum,
     Boolean,
+    ForeignKey,
     true
 )
 
 from sqlalchemy.orm import (
     Mapped,
-    mapped_column
+    mapped_column,
+    relationship
 )
 
-from app import db
+from .. import db
+from ..users.models import User
+
+
+# Проміжна таблиця для зв'язку багато до багатьох
+post_tags = db.Table(
+    "post_tags",
+
+    db.Column(
+        "post_id",
+        db.Integer,
+        db.ForeignKey("posts.id"),
+        primary_key=True
+    ),
+
+    db.Column(
+        "tag_id",
+        db.Integer,
+        db.ForeignKey("tags.id"),
+        primary_key=True
+    )
+)
 
 
 class Post(db.Model):
 
     __tablename__ = "posts"
 
-    # Унікальний ID
-    id: Mapped[int] = mapped_column(
-        primary_key=True
-    )
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    # Заголовок
     title: Mapped[str] = mapped_column(
-        String(150),
-        nullable=False
+        String(150), nullable=False
     )
 
-    # Текст публікації
     content: Mapped[str] = mapped_column(
-        Text,
-        nullable=False
+        Text, nullable=False
     )
 
-    # Дата створення
     posted: Mapped[datetime] = mapped_column(
         DateTime,
         nullable=False,
         default=datetime.utcnow
     )
 
-    # Категорія
     category: Mapped[str] = mapped_column(
         Enum(
             "news",
@@ -58,7 +72,6 @@ class Post(db.Model):
         default="other"
     )
 
-    # Активність публікації
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         nullable=False,
@@ -66,13 +79,43 @@ class Post(db.Model):
         server_default=true()
     )
 
-    # Автор
-    author: Mapped[str] = mapped_column(
-        String(20),
-        nullable=False,
-        default="Anonymous",
-        server_default="Anonymous"
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False
     )
 
-    def __repr__(self):
+    # Зв'язок із користувачем
+    user: Mapped["User"] = relationship(
+        back_populates="posts"
+    )
+
+    # Один пост може мати багато тегів
+    tags: Mapped[list["Tag"]] = relationship(
+        secondary=post_tags,
+        back_populates="posts"
+    )
+
+    def repr(self):
         return f"<Post {self.id}: {self.title}>"
+
+
+class Tag(db.Model):
+
+    __tablename__ = "tags"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    name: Mapped[str] = mapped_column(
+        String(50),
+        unique=True,
+        nullable=False
+    )
+
+    # Один тег може належати багатьом постам
+    posts: Mapped[list["Post"]] = relationship(
+        secondary=post_tags,
+        back_populates="tags"
+    )
+
+    def repr(self):
+        return f"<Tag {self.name}>"

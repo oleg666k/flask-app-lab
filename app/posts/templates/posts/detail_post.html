@@ -31,12 +31,29 @@
 
     <p>
         <strong>Автор:</strong>
-        {{ post.author }}
+        {{ post.user.username }}
     </p>
 
     <p>
         <strong>Категорія:</strong>
         {{ post.category }}
+    </p>
+    <p>
+    <strong>Теги:</strong>
+
+      {% for tag in post.tags %}
+
+          <span class="post-tag">
+              #{{ tag.name }}
+          </span>
+
+      {% else %}
+
+        <span class="text-muted">
+            Теги відсутні
+        </span>
+
+      {% endfor %}
     </p>
 
     <p>
