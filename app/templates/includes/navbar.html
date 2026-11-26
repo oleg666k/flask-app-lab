@@ -6,13 +6,13 @@
             Моє портфоліо
         </a>
 
-        <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainMenu"
-        >
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainMenu">
+
             <span class="navbar-toggler-icon"></span>
+
         </button>
 
         <div class="collapse navbar-collapse" id="mainMenu">
@@ -49,17 +49,51 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">
-                        Вхід
-                    </a>
-                </li>
+                {% if current_user.is_authenticated %}
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/profile">
-                        Профіль
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users">
+                            Користувачі
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/account">
+                            Профіль
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+
+                        <form method="POST"
+                              action="{{ url_for('users.logout') }}">
+
+                            {{ action_form.hidden_tag() }}
+
+                            <button type="submit"
+                                    class="nav-link btn btn-link">
+                                Вихід
+                            </button>
+
+                        </form>
+
+                    </li>
+
+                {% else %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">
+                            Реєстрація
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">
+                            Вхід
+                        </a>
+                    </li>
+
+                {% endif %}
 
             </ul>
 

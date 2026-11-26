@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import render_field %}
+
+{% block title %}Registration{% endblock %}
+
+{% block content %}
+
+<div class="card shadow mx-auto" style="max-width: 500px;">
+
+    <div class="card-body p-4">
+
+        <h2 class="text-center mb-4">Registration</h2>
+
+        <form method="POST"
+              action="{{ url_for('users.register') }}"
+              novalidate>
+
+            {{ form.hidden_tag() }}
+
+            {{ render_field(form.username) }}
+
+            {{ render_field(form.email) }}
+
+            {{ render_field(form.password) }}
+
+            {{ render_field(form.confirm_password) }}
+
+            {{ form.submit(class="btn btn-success w-100") }}
+
+        </form>
+
+        <p class="text-center mt-3">
+            Already registered?
+
+            <a href="{{ url_for('users.login') }}">
+                Login
+            </a>
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

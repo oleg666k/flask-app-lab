@@ -3,10 +3,12 @@ import os
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
 from sqlalchemy import MetaData
 from sqlalchemy.orm import DeclarativeBase
-from app.config import (
 
+from .config import (
     DevelopmentConfig,
     TestingConfig,
     ProductionConfig
@@ -28,6 +30,11 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
 
+# Хешування паролів
+bcrypt = Bcrypt()
+
+login_manager = LoginManager()
+
 
 def create_app(config_name=None):
 
@@ -38,44 +45,46 @@ def create_app(config_name=None):
     }
 
     if config_name is None:
-        config_name = os.getenv(
-            "APP_ENV",
-            "development"
-        )
+        config_name = os.getenv("APP_ENV", "development")
 
     app = Flask(__name__)
 
     app.config.from_object(
-        configurations.get(
-            config_name,
-            DevelopmentConfig
-        )
+        configurations.get(config_name, DevelopmentConfig)
     )
 
     app.config["SQLALCHEMY_ECHO"] = False
+
+    # Підключення модулів
     db.init_app(app)
     migrate.init_app(app, db)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
 
-    from app.views import register_routes
+    # Налаштування FlaskLogin
+    login_manager.login_view = "users.login"
+    login_manager.login_message = "Please log in first."
+    login_manager.login_message_category = "warning"
+
+    from .views import register_routes
     register_routes(app)
 
-    # імпорт Blueprints
-    from app.users import user_bp
-    from app.products import product_bp
-    from app.posts import post_bp
+    from .users import user_bp
+    from .products import product_bp
+    from .posts import post_bp
 
-    from app.posts import models
+    # Підключення моделей
+    from .posts import models as post_models
+    from .products import models as product_models
+    from .users import models as user_models
 
-    #  Blueprints
+    # Реєстрація Blueprints
     app.register_blueprint(user_bp)
     app.register_blueprint(product_bp)
     app.register_blueprint(post_bp)
 
-    # Обробка помилки 404
     @app.errorhandler(404)
     def page_not_found(error):
         return render_template("404.html"), 404
-    from .products import models
-    from .users import models as user_models
 
     return app
